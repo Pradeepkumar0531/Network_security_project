@@ -1,13 +1,12 @@
 from pymongo.mongo_client import MongoClient
+from pymongo.errors import ConnectionFailure, ConfigurationError
+import ssl
 
-uri = "mongodb+srv://PradeepKumar:pradeep531@cluster0.dz9f9k8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri = "mongodb+srv://PradeepKumar:pradeep531@cluster0.dz9f9k8.mongodb.net/?retryWrites=true&w=majority"
 
-# Create a new client and connect to the server
-client = MongoClient(uri)
-
-# Send a ping to confirm a successful connection
 try:
+    client = MongoClient(uri, tls=True, tlsAllowInvalidCertificates=False, serverSelectionTimeoutMS=10000)
     client.admin.command('ping')
     print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
+except (ConnectionFailure, ConfigurationError, Exception) as e:
+    print("Connection failed:", e)
